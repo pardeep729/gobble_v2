@@ -13,10 +13,23 @@ class Card(Group):
         TODO
     """
 
-    def __init__(self, *symbols, radius) -> None:
+    def __init__(self, symbols, radius, symbols_per_card) -> None:
+        """
+        Constructor for Card class.
+
+        Parameters:
+            symbols (List): List of instances of Symbol.
+            radius (int): Radius of a single card in pixels.
+            symbols_per_card (int): Number of symbols per card
+        """
+        # Raise exception if number of sprites and symbol_per_card not equal
+        if len(symbols) != symbols_per_card:
+            raise Exception("Number of sprites supplied does not equal the symbols_per_card.")
+        
         super().__init__(*symbols)
         self.collisions = {} # A dictionary that will hold information on collisions between symbols
         self.radius = radius # Radius of the card
+        self.symbols_per_card = symbols_per_card
 
     def copy(self):
         """copy a group with all the same sprites
@@ -28,7 +41,7 @@ class Card(Group):
 
         """
         return self.__class__(  # noqa pylint: disable=too-many-function-args
-            self.sprites(), radius=self.radius  # Needed because copy() won't work on AbstractGroup
+            self.sprites(), radius=self.radius, symbols_per_card=self.symbols_per_card  # Needed because copy() won't work on AbstractGroup
         )
 
     def regenerate(self):

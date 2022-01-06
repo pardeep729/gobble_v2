@@ -8,6 +8,7 @@ from pygame.sprite import groupcollide, spritecollide, collide_rect, collide_mas
 
 # Custom modules
 from assets import make_path, Assets
+from autocropper import AutoCropper
 from symbol import Symbol
 from card import Card
 
@@ -17,21 +18,36 @@ pygame.init()
 
 
 # Global variables
-APP_NAME = 'Gobble Generator 2'
-WINDOW_WIDTH = 1000
-WINDOW_HEIGHT = 1000
+APP_NAME = 'Gobble Generator 2' # Name of app
+WINDOW_WIDTH = 1000 # Width of window
+WINDOW_HEIGHT = WINDOW_WIDTH # Height of window (square)
 WINDOW_SIZE = (WINDOW_WIDTH, WINDOW_HEIGHT)
-WINDOW = None
-FPS = 60
-CARD_RADIUS = WINDOW_WIDTH / 2
+WINDOW = None # Global instance of window Surface
+FPS = 60 # Frames per second
+CARD_RADIUS = WINDOW_WIDTH / 2 # Radius of each card (=1/2 width of window)
+SYMBOLS_PER_CARD = 8 # Number of symbols per card 
 
 def main():
     """
     This function is executed when main.py is run
+
+    Flow: TODO Finish
+        1. Load all assets (images) into memory and normalise sizes
+        2. Create the base pygame app
+        3.  ....
     """
-    # Set local reference to Assets class
-    assets = Assets()
-    # print(assets.filenames)
+
+    #################
+    # Preliminaries #
+    #################
+
+    # Make sure all images are cropped to their content (i.e. no empty space around each image)
+    autocropper = AutoCropper('images')
+    autocropper.crop('images_cropped')
+
+    # Load all images
+    assets = Assets('images_cropped')
+    assets.normalise_images(CARD_RADIUS, SYMBOLS_PER_CARD)
 
     # Set title and window size
     pygame.display.set_caption(APP_NAME)
@@ -43,14 +59,17 @@ def main():
     # Start run loop
     run = True
 
-    test_x = 280
-    test_y = 150
+    #################
+    # Main run loop #
+    #################
 
     while run:
         clock.tick(FPS) # Tick clock
-        
 
-        # Handle events
+        #################
+        # Handle events #
+        #################
+
         for event in pygame.event.get():
             # Exit game
             if event.type == pygame.QUIT:
@@ -58,20 +77,29 @@ def main():
                 pygame.quit()
 
 
-        # Update necessary things (e.g. variables)
+        ###########################
+        # Update necessary things # 
+        # (e.g. variables)        #
+        ###########################
 
+        #################
+        # Draw graphics #
+        #################
 
-        # Draw graphics
-        # Draw dobble card circle
+        # Draw an example card
 
-
-        # Draw an example sprite
-
-        symbol_names = ('ADAM', 'AINSLEY', 'AMAL', 'AMAR', 'ANOOP', 'ARIYAN', 'AVOCADO', 'BALJIT')
-        symbol1 = Symbol("AINSLEY", make_path('images', 'AINSLEY.png'))   
-        symbol2 = Symbol("DARTH VADER", make_path('images', 'DARTH VADER.png'), pos_x=test_x, pos_y=test_y) 
-        sprites = [Symbol(sn, make_path("images", sn+".png")) for sn in symbol_names]   
-        card1 = Card(sprites, radius=CARD_RADIUS)
+        assets_for_card = assets.get_assets_from_name(
+            ['MANGO', 'CRANE', 'DARTH VADER', 'GORILLA', 'REKHAS CHILLI', 'MR BURNS', 'GINGY', 'GLASSI']
+        ) # Get chosen images
+        sprites = []
+        for idx, a in enumerate(assets_for_card):
+            sprites.append(Symbol(
+                a, 
+                pos_x=idx*(WINDOW_WIDTH/SYMBOLS_PER_CARD),
+                pos_y=idx*(WINDOW_HEIGHT/SYMBOLS_PER_CARD),
+                scale=0.3
+            )) 
+        card1 = Card(sprites, radius=CARD_RADIUS, symbols_per_card=SYMBOLS_PER_CARD)
         
         # Draw card circle
         pygame.draw.circle(WINDOW, 
@@ -80,7 +108,6 @@ def main():
             card1.radius
         )
         card1.draw(WINDOW) # Draw card symbols
-        print("fine")
 
         
         collisions = card1.calc_collisions() # Calculate collisions
@@ -90,13 +117,15 @@ def main():
             if len(colliding_sprites) > 0:
                 for sprite_b in colliding_sprites:
                     print(f"{sprite_a.name} colliding with {sprite_b.name}")
-            else:
-                print(f"{sprite_a.name} doesn't collide with anything")
+            # else:
+            #     print(f"{sprite_a.name} doesn't collide with anything")
         
         
         # break
         
-
+        ##########################
+        # Last things to execute #
+        ##########################
         pygame.display.update()
         pygame.display.flip()
 
