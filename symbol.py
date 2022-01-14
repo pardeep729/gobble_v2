@@ -14,7 +14,7 @@ class Symbol(Sprite):
         TODO
     """
     
-    def __init__(self, asset: Dict, pos_x=0, pos_y=0, angle=0, scale=1) -> None:
+    def __init__(self, asset: dict, pos_x=0, pos_y=0, angle=0, scale=1) -> None:
         """
         A class to represent a single symbol of a gobble card.
 
@@ -39,11 +39,12 @@ class Symbol(Sprite):
         self.image = pygame.transform.rotate(self.image, self.angle) # Rotate image
 
         self.rect = self.image.get_rect() # Rect attribute of the symbol
-        self.rect.x = pos_x # X coordinate of position of symbol on screen
-        self.rect.y = pos_y # Y coordinate of position of symbol on screen
+        self.rect.centerx = pos_x # X coordinate of position of symbol on screen
+        self.rect.centery = pos_y # Y coordinate of position of symbol on screen
 
         self.mask = pygame.mask.from_surface(self.image) # Create a mask of the Surface object of this symbol
-        
+    
+    
     def get_pos(self) -> tuple:
         """
         Return tuple of the x and y position of the symbol.
