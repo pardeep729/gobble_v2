@@ -241,7 +241,7 @@ class Card(Group):
             area_symbols += area # Add to running total
  
         ratio = area_symbols/area_card # Calculate ratio
-        print(ratio)
+        # print(ratio)
 
         return ratio
  ########################

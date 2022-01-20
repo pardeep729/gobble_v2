@@ -1,5 +1,6 @@
 # ignore ALL .log files
 *.log
 
-# ignore ALL files in ANY directory named temp
+# ignore ALL files in ANY directory named env or _archive
 env/
+_archive/

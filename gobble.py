@@ -49,7 +49,13 @@ GOBBLE_TEMPLATE_FILENAME = 'gobble.xlsx'
 GOBBLE_TEMPLATE = make_path(GOBBLE_TEMPLATE_FOLDER, GOBBLE_TEMPLATE_FILENAME)
 
 
-def main():
+def gobble(card_nos=None):
+    """
+    The main function.
+
+    Parameters:
+        card_nos (list[int]): List of specific card numbers to regenerate. If leave as None, all cards will be regenerated
+    """
     # Check that an export folder exists
     if not os.path.exists(OUTPUT_FOLDER):
         os.makedirs(OUTPUT_FOLDER) 
@@ -67,6 +73,14 @@ def main():
         replacement_dict[temp_item] = repl_item
 
     customised_template = template.replace(replacement_dict) # Replace template with our values
+    if card_nos is not None:
+        customised_template = customised_template.loc[customised_template['Card #'].isin(card_nos)]
+
+    # print(f"Doing the following cards:")
+    # msg = card_nos if card_nos is not None else "All"
+    # print(msg)
+    # print(customised_template)
+    # return
 
     #################
     # Preliminaries #
@@ -254,7 +268,8 @@ def gobble_loop(clock: pygame.time.Clock, assets: Assets, static_images: Assets,
 ###################
 if __name__ == '__main__':
     start = time.time()
-    main()
+    # main() # Generates all cards
+    gobble([1, 18]) # Generates specific card numbers only
     end = time.time()
     print(f"Program took {end - start} seconds to run.")
 
