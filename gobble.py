@@ -1,3 +1,11 @@
+########################################################################################
+# TODO:
+# Stitch cards together as real life size, with backs form Jat lined up - can be printed
+# Create a program that creates outline 3d models of all pieces, so can be 3d modelled
+# Turn this generator into a website
+########################################################################################
+
+
 # Standard modules
 import os
 import random
